@@ -6,7 +6,9 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+
 
 namespace Api_Estudo.Controllers
 {
@@ -14,6 +16,7 @@ namespace Api_Estudo.Controllers
     {
 
         private readonly Repositories.SQL.Pacientes repoPaciente;
+
 
         public PacientesController() {
 
@@ -24,24 +27,42 @@ namespace Api_Estudo.Controllers
 
 
         // GET: api/Pacientes
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            return Ok(repoPaciente.Get());
+            return Ok( await repoPaciente.Get());
         }
 
 
         // GET: api/Pacientes/5
-        public IHttpActionResult Get(int id)
+        public async Task<IHttpActionResult> Get(int id)
         {
-            return Ok(repoPaciente.Get(id));
+            Models.Paciente paciente = await repoPaciente.Get(id);
+
+            if (paciente is null)
+                return NotFound();
+
+            return Ok(paciente);
         }
 
+
+
+        public async Task<IHttpActionResult> Get(string nome)
+        {
+            List<Models.Paciente> pacientes = await repoPaciente.Get(nome);
+
+            if (pacientes is null)
+                return NotFound();
+
+
+            return Ok(pacientes);
+        }
 
 
 
         // POST: api/Pacientes
         public void Post([FromBody]string value)
         {
+
         }
 
         // PUT: api/Pacientes/5
