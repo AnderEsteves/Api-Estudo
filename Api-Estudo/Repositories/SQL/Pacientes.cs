@@ -120,5 +120,73 @@ namespace Api_Estudo.Repositories.SQL
 
             return pacientes;
         }
+
+
+        public async Task<bool> Post(Models.Paciente paciente)
+        {
+            using (this.conn)
+            {
+                await this.conn.OpenAsync();
+
+                using (this.cmd){
+
+                    cmd.CommandText = "insert into paciente (nome, data_nascimento) values (@nome, @data_nascimento); select convert(int,SCOPE_IDENTITY());";
+
+                    cmd.Parameters.Add(new SqlParameter("@nome", System.Data.SqlDbType.VarChar)).Value = paciente.Nome;
+                    cmd.Parameters.Add(new SqlParameter("@data_nascimento", System.Data.SqlDbType.Date)).Value = paciente.DataNascimento;
+                    paciente.Codigo = (int) await cmd.ExecuteScalarAsync();
+
+                }
+            }
+
+            return paciente.Codigo != 0;
+        }
+
+
+        public async Task<bool> Put(Models.Paciente paciente)
+        {
+
+            int linhasAfetadas = 0;
+
+            using (this.conn)
+            {
+                await this.conn.OpenAsync();
+
+                using (this.cmd)
+                {
+                    cmd.CommandText = "update paciente set nome = @nome, data_nascimento = @data_nascimento where codigo = @id ";
+                   
+                    cmd.Parameters.Add(new SqlParameter("@nome", System.Data.SqlDbType.VarChar)).Value = paciente.Nome;
+                    cmd.Parameters.Add(new SqlParameter("@data_nascimento", System.Data.SqlDbType.Date)).Value = paciente.DataNascimento;
+                    cmd.Parameters.Add(new SqlParameter("@id", System.Data.SqlDbType.Int)).Value = paciente.Codigo;
+
+                    linhasAfetadas = (int) await cmd.ExecuteNonQueryAsync();
+                }
+            }
+                
+             return linhasAfetadas != 0;
+        } 
+
+        public async Task<bool> Delete(int id)
+        {
+
+            int linhasAfetadas = 0;
+
+            using (this.conn) { 
+            
+                await this.conn.OpenAsync();
+
+                using (this.cmd)
+                {
+                    cmd.CommandText = "delete paciente where codigo = @id;";
+                    cmd.Parameters.Add(new SqlParameter("@id", System.Data.SqlDbType.Int)).Value = id;
+
+                    linhasAfetadas = (int) await cmd.ExecuteNonQueryAsync();
+                }
+            }
+
+            return linhasAfetadas == 1;
+        }
+
     }
 }

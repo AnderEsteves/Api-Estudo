@@ -9,8 +9,12 @@ namespace Api_Estudo.Configuration
     {
         public static string GetConnectionString()
         {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["consultorio"].ConnectionString;
+
+            return System.Configuration.ConfigurationManager.ConnectionStrings["consultorio2"].ConnectionString;
+
         }
 
     }
+
+
 }
