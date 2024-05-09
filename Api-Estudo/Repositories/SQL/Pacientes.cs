@@ -67,7 +67,7 @@ namespace Api_Estudo.Repositories.SQL
 
                 using (this.cmd)
                 {
-                    cmd.CommandText = "select codigo, nome, data_nascimento from paciente where codigo = @codigo;";
+                    cmd.CommandText = "select codigo, nome, data_nasciment from paciente where codigo = @codigo;";
                     cmd.Parameters.Add(new SqlParameter("@codigo", System.Data.SqlDbType.Int)).Value = id;
 
                     using (SqlDataReader dr = await cmd.ExecuteReaderAsync())

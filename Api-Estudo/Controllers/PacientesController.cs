@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
+using System.EnterpriseServices;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -19,6 +21,8 @@ namespace Api_Estudo.Controllers
 
         private readonly Repositories.SQL.Pacientes repoPaciente;
 
+       
+
 
         public PacientesController() {
 
@@ -26,10 +30,19 @@ namespace Api_Estudo.Controllers
         }
 
 
+        private void Log(Exception ex)
+        {
+            using (StreamWriter arq = new StreamWriter("C:\\Users\\Álvaro\\Desktop\\log.txt", true))
+            {
+                arq.WriteLine($"data:\t{DateTime.Now}");
+                arq.WriteLine($"mensagem:\t{ex.Message}");
+                arq.WriteLine($"stack:\t{ex.StackTrace}\n\n\n");
+            }
+        }
 
 
-        // GET: api/Pacientes
-        public async Task<IHttpActionResult> Get()
+       // GET: api/Pacientes
+       public async Task<IHttpActionResult> Get()
         { 
            return Ok( await repoPaciente.Get());
         }
@@ -38,12 +51,26 @@ namespace Api_Estudo.Controllers
         // GET: api/Pacientes/5
         public async Task<IHttpActionResult> Get(int id)
         {
-            Models.Paciente paciente = await repoPaciente.Get(id);
 
-            if (paciente is null)
-                return NotFound();
+            try
+            {
+                Models.Paciente paciente = await repoPaciente.Get(id);
 
-            return Ok(paciente);
+                if (paciente is null)
+                    return NotFound();
+
+                return Ok(paciente);
+
+            }
+            catch (Exception ex)
+            {
+
+                Log(ex);
+
+                return InternalServerError();
+
+            }
+
         }
 
 
