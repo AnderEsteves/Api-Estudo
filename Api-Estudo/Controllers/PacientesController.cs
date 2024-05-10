@@ -1,4 +1,5 @@
 ﻿using Api_Estudo.Configuration;
+using Api_Estudo.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -52,24 +53,30 @@ namespace Api_Estudo.Controllers
         public async Task<IHttpActionResult> Get(int id)
         {
 
-            try
-            {
-                Models.Paciente paciente = await repoPaciente.Get(id);
+            //try
+            //{
+            //    Models.Paciente paciente = await repoPaciente.Get(id);
 
-                if (paciente is null)
-                    return NotFound();
+            //    if (paciente is null)
+            //        return NotFound();
 
-                return Ok(paciente);
+            //    return Ok(paciente);
 
-            }
-            catch (Exception ex)
-            {
+            //}
+            //catch (Exception ex)
+            //{
 
-                Log(ex);
+            //    Log(ex);
 
-                return InternalServerError();
+            //    return InternalServerError();
+            //}
 
-            }
+            Models.Paciente paciente = await repoPaciente.Get(id);
+
+            if (paciente is null)
+                return NotFound();
+
+            return Ok(paciente);
 
         }
 
